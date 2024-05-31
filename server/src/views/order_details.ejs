@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Details</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #cce5ff; /* Background color */
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 a {
+        color: #fff; /* White color for the anchor tag */
+        text-decoration: none; /* Remove underline */
+      }
+
+      h1 a:visited {
+        color: #fff; /* White color for visited links */
+      }
+
+      .navbar {
+        background-color: #007bff; /* Blue navbar */
+        color: #fff;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .navbar h1 {
+        margin: 0;
+      }
+
+      /* Navbar and other shared styles */
+      .navbar-links {
+        background-color: #007bff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Adjust alignment */
+        width: 100%; /* Make navbar-links take full width */
+      }
+
+      .navbar-links div {
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar-links a,
+      .navbar-links button {
+        color: #fff;
+        text-decoration: none;
+        padding: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      /* Additional styles for better alignment */
+      .navbar-links .right {
+        margin-left: auto; /* Push the button to the right */
+      }
+
+      .logout-button {
+        background-color: #fff; /* White background */
+        color: #007bff; /* Blue text */
+        border: 1px solid #007bff; /* Blue border */
+        border-radius: 4px;
+        padding: 8px 12px;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .logout-button:hover {
+        background-color: #007bff; /* Blue background on hover */
+        color: #fff; /* White text on hover */
+      }
+
+      .footer {
+        background-color: #007bff; /* Blue footer */
+        color: #fff;
+        padding: 10px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      /* Body container */
+      .container {
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+        max-width: 800px;
+      }
+
+      .card {
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 10px;
+        width: 100%;
+      }
+
+      .submit-button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        display: none; /* Hidden by default */
+      }
+
+      .submit-button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div class="navbar">
+      <h1><a href="/dashboard">Sakib Gadgets</a></h1>
+      <a href="/admin/logout" class="logout-button">Logout</a>
+    </div>
+
+    <!-- Navbar links -->
+    <div class="navbar-links">
+      <div>
+        <a href="/customer">Customer</a>
+        <a href="/product">Product</a>
+        <a href="/order">Order</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>Order Details</h2>
+      <div class="card">
+        <p><strong>Order Invoice:</strong> <%= order.invoice %></p>
+        <p><strong>Customer Name:</strong> <%= order.customer_name %></p>
+        <p><strong>Customer Email:</strong> <%= order.customer_email %></p>
+        <p><strong>Product Name:</strong> <%= order.product_name %></p>
+        <p><strong>Total Price:</strong> BDT<%= order.amount %></p>
+        <form id="statusForm">
+          <p><strong>Status:</strong>
+            <% if (order.status === "Paid") { %>
+              <select id="status" name="status">
+                <option value="Paid" <%= order.status === "Paid" ? "selected" : "" %>>Paid</option>
+                <option value="Fulfilled" <%= order.status === "Fulfilled" ? "selected" : "" %>>Fulfilled</option>
+              </select>
+              <input type="hidden" id="invoice" name="invoice" value="<%= order.invoice %>">
+              <button type="submit" id="submitStatus" class="submit-button">Submit</button>
+            <% } else { %>
+              <%= order.status %>
+            <% } %>
+          </p>
+        </form>
+        <p><strong>Payment URL:</strong> <a href="<%= order.paymentUrl %>"><%= order.paymentUrl %></a></p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>&copy; 2024 Sakib Gadgets</p>
+    </div>
+
+    <script>
+      document.getElementById("status").addEventListener("change", function () {
+        const status = this.value;
+        const submitButton = document.getElementById("submitStatus");
+        if (status === "Fulfilled") {
+          submitButton.style.display = "inline-block";
+        } else {
+          submitButton.style.display = "none";
+        }
+      });
+
+      document.getElementById("statusForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const status = document.getElementById("status").value;
+        const invoice = document.getElementById("invoice").value;
+
+        fetch("/changeStatus", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            invoice: invoice,
+            status: status
+          }),
+        })
+          .then(() => {
+            location.reload();
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred while updating the status.");
+          });
+      });
+    </script>
+  </body>
+</html>

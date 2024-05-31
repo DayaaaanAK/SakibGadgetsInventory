@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Order</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #cce5ff; /* Background color */
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Ensure the body takes full height */
+      }
+
+      h1 a {
+        color: #fff; /* White color for the anchor tag */
+        text-decoration: none; /* Remove underline */
+      }
+
+      h1 a:visited {
+        color: #fff; /* White color for visited links */
+      }
+
+      .navbar {
+        background-color: #007bff; /* Blue navbar */
+        color: #fff;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .navbar h1 {
+        margin: 0;
+      }
+
+      /* Navbar and other shared styles */
+      .navbar-links {
+        background-color: #007bff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Adjust alignment */
+        width: 100%; /* Make navbar-links take full width */
+      }
+
+      .navbar-links div {
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar-links a,
+      .navbar-links button {
+        color: #fff;
+        text-decoration: none;
+        padding: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      /* Additional styles for better alignment */
+      .navbar-links .right {
+        margin-left: auto; /* Push the button to the right */
+      }
+
+      .logout-button {
+        background-color: #fff; /* White background */
+        color: #007bff; /* Blue text */
+        border: 1px solid #007bff; /* Blue border */
+        border-radius: 4px;
+        padding: 8px 12px;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .logout-button:hover {
+        background-color: #007bff; /* Blue background on hover */
+        color: #fff; /* White text on hover */
+      }
+
+      /* Body container */
+      .container {
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+        max-width: 800px;
+        margin-bottom: 60px; /* Space for the footer */
+      }
+
+      /* Form styles */
+      .form-group {
+        margin-bottom: 20px;
+        width: 100%;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      select,
+      input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .card {
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 10px;
+        width: 100%;
+      }
+
+      .submit-button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .submit-button:hover {
+        background-color: #0056b3;
+      }
+
+      .footer {
+        background-color: #007bff; /* Blue footer */
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        width: 100%;
+        position: relative;
+        bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div class="navbar">
+      <h1><a href="/dashboard">Sakib Gadgets</a></h1>
+      <a href="/admin/logout" class="logout-button">Logout</a>
+    </div>
+
+    <!-- Navbar links -->
+    <div class="navbar-links">
+      <div>
+        <a href="/customer">Customer</a>
+        <a href="/product">Product</a>
+        <a href="/order">Order</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>Add Order</h2>
+      <form id="orderForm">
+        <div class="form-group">
+          <label for="customer">Select Customer:</label>
+          <select id="customer" name="customer" required>
+            <!-- Options will be populated dynamically -->
+          </select>
+          <div id="customerCard" class="card" style="display: none">
+            <p><strong>Name:</strong> <span id="customerName"></span></p>
+            <p><strong>Email:</strong> <span id="customerEmail"></span></p>
+            <p><strong>Phone:</strong> <span id="customerPhone"></span></p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="product">Select Product:</label>
+          <select id="product" name="product" required>
+            <!-- Options will be populated dynamically -->
+          </select>
+          <div id="productCard" class="card" style="display: none">
+            <p><strong>Name:</strong> <span id="productName"></span></p>
+            <p><strong>Price:</strong> $<span id="productPrice"></span></p>
+            <p>
+              <strong>Available Quantity:</strong>
+              <span id="productQuantity"></span>
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="quantity">Enter Quantity:</label>
+          <input type="number" id="quantity" name="quantity" min="1" required />
+        </div>
+
+        <button type="submit" class="submit-button">Create Order</button>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>&copy; 2024 Sakib Gadgets</p>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Fetch customers and products from the server
+        fetch("/customer/getCustomers")
+          .then((response) => response.json())
+          .then((customers) => {
+            const customerSelect = document.getElementById("customer");
+            const option = document.createElement("option");
+            option.value = "-1";
+            option.textContent = "Customer Email";
+            option.selected = true;
+            option.disabled = true;
+            option.hidden = true;
+            customerSelect.appendChild(option);
+            customers.forEach((customer) => {
+              const option = document.createElement("option");
+              option.value = customer.id;
+              option.textContent = customer.email;
+              customerSelect.appendChild(option);
+            });
+          });
+
+        fetch("/product/getProducts")
+          .then((response) => response.json())
+          .then((products) => {
+            const productSelect = document.getElementById("product");
+            const option = document.createElement("option");
+            option.value = "-1";
+            option.textContent = "Product Name";
+            option.selected = true;
+            option.disabled = true;
+            option.hidden = true;
+            productSelect.appendChild(option);
+            products.forEach((product) => {
+              const option = document.createElement("option");
+              option.value = product.id;
+              option.textContent = product.name;
+              productSelect.appendChild(option);
+            });
+          });
+
+        // Display customer info when selected
+        document
+          .getElementById("customer")
+          .addEventListener("change", function () {
+            const customerId = this.value;
+            fetch(`/customer/getCustomer/${customerId}`)
+              .then((response) => response.json())
+              .then((customer) => {
+                document.getElementById("customerName").textContent =
+                  customer.name;
+                document.getElementById("customerEmail").textContent =
+                  customer.email;
+                document.getElementById("customerPhone").textContent =
+                  customer.phone;
+                document.getElementById("customerCard").style.display = "block";
+              });
+          });
+
+        // Display product info when selected
+        document
+          .getElementById("product")
+          .addEventListener("change", function () {
+            const productId = this.value;
+            fetch(`/product/getProduct/${productId}`)
+              .then((response) => response.json())
+              .then((product) => {
+                document.getElementById("productName").textContent =
+                  product.name;
+                document.getElementById("productPrice").textContent =
+                  product.price;
+                document.getElementById("productQuantity").textContent =
+                  product.quantity;
+                document.getElementById("productCard").style.display = "block";
+              });
+          });
+
+        // Validate quantity
+        document
+          .getElementById("quantity")
+          .addEventListener("input", function () {
+            const enteredQuantity = parseInt(this.value, 10);
+            const availableQuantity = parseInt(
+              document.getElementById("productQuantity").textContent,
+              10
+            );
+            if (enteredQuantity > availableQuantity) {
+              alert("Entered quantity exceeds available quantity.");
+              this.value = availableQuantity;
+            }
+          });
+      });
+      document
+        .getElementById("orderForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const customer_id = document.getElementById("customer").value;
+          const product_id = document.getElementById("product").value;
+          const product_quantity = document.getElementById("quantity").value;
+
+          const orderData = {
+            customer_id: customer_id,
+            product_id: product_id,
+            product_quantity: product_quantity,
+          };
+
+          const response = await fetch("/addOrder", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(orderData),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            window.location.href = `/order_details/${data.orderId}`;
+          } else {
+            const errorData = await response.json();
+            alert(errorData.message);
+          }
+        });
+    </script>
+  </body>
+</html>

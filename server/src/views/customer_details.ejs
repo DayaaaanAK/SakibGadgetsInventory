@@ -1,0 +1,122 @@
+<!-- views/customer_details.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Details</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #b0c4de; /* Light Steel Blue */
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 a {
+        color: #fff; /* White color for the anchor tag */
+        text-decoration: none; /* Remove underline */
+      }
+
+      h1 a:visited {
+        color: #fff; /* White color for visited links */
+      }
+
+      .navbar {
+        background-color: #007bff; /* Blue navbar */
+        color: #fff;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .navbar h1 {
+        margin: 0;
+      }
+
+      .navbar-links {
+        background-color: #007bff;
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar-links a {
+        color: #fff;
+        text-decoration: none;
+        padding: 10px;
+      }
+
+      .navbar-links div {
+        margin-left: 20px;
+      }
+
+      .logout-button {
+        background-color: #fff; /* White background */
+        color: #007bff; /* Blue text */
+        border: 1px solid #007bff; /* Blue border */
+        border-radius: 4px;
+        padding: 8px 12px;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .logout-button:hover {
+        background-color: #007bff; /* Blue background on hover */
+        color: #fff; /* White text on hover */
+      }
+
+      .container {
+        margin: auto;
+        padding: 20px;
+        background-color: #fff; /* White container */
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 800px; /* Limit the maximum width of the container */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 80vh; /* Set the container height to 80% of the viewport height */
+      }
+
+      .footer {
+        background-color: #007bff; /* Blue footer */
+        color: #fff;
+        padding: 10px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <h1><a href="/dashboard">Sakib Gadgets</a></h1>
+      <a href="/admin/logout" class="logout-button">Logout</a>
+    </div>
+
+    <div class="navbar-links">
+      <a href="/customer">Customer</a>
+      <a href="/product">Product</a>
+      <a href="/order">Order</a>
+    </div>
+
+    <div class="container">
+      <h2>Customer Details</h2>
+      <p><strong>Name:</strong> <%= customer.name %></p>
+      <p><strong>Email:</strong> <%= customer.email %></p>
+      <p><strong>Phone:</strong> <%= customer.phone %></p>
+      <p><strong>Street:</strong> <%= customer.street %></p>
+      <p><strong>City:</strong> <%= customer.city %></p>
+      <p><strong>State:</strong> <%= customer.state %></p>
+      <p><strong>Zipcode:</strong> <%= customer.zipcode %></p>
+      <p><strong>Country:</strong> <%= customer.country %></p>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2024 Sakib Gadgets</p>
+    </div>
+  </body>
+</html>

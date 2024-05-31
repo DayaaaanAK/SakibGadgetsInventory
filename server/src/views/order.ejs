@@ -1,0 +1,148 @@
+<!-- views/customers.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orders</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #b0c4de; /* Light Steel Blue */
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 a {
+        color: #fff; /* White color for the anchor tag */
+        text-decoration: none; /* Remove underline */
+      }
+
+      h1 a:visited {
+        color: #fff; /* White color for visited links */
+      }
+
+      .navbar {
+        background-color: #007bff; /* Blue navbar */
+        color: #fff;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .navbar h1 {
+        margin: 0;
+      }
+
+      .navbar-links {
+        background-color: #007bff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Adjust alignment */
+        width: 100%; /* Make navbar-links take full width */
+      }
+
+      .navbar-links div {
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar-links a,
+      .navbar-links button {
+        color: #fff;
+        text-decoration: none;
+        padding: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      /* Additional styles for better alignment */
+      .navbar-links .right {
+        margin-left: auto; /* Push the button to the right */
+      }
+
+      .logout-button {
+        background-color: #fff; /* White background */
+        color: #007bff; /* Blue text */
+        border: 1px solid #007bff; /* Blue border */
+        border-radius: 4px;
+        padding: 8px 12px;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .logout-button:hover {
+        background-color: #007bff; /* Blue background on hover */
+        color: #fff; /* White text on hover */
+      }
+
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        padding: 20px;
+        text-align: center;
+        width: 200px;
+        transition: transform 0.2s;
+        cursor: pointer;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .footer {
+        background-color: #007bff; /* Blue footer */
+        color: #fff;
+        padding: 10px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <h1><a href="/dashboard">Sakib Gadgets</a></h1>
+      <a href="/admin/logout" class="logout-button">Logout</a>
+    </div>
+
+    <div class="navbar-links">
+      <div>
+        <a href="/customer">Customer</a>
+        <a href="/product">Product</a>
+        <a href="/order">Order</a>
+      </div>
+      <a href="/addOrder" class="right">Add Order</a>
+    </div>
+
+    <div class="container">
+      <% orders.forEach(order => { %>
+      <div
+        class="card"
+        onclick="location.href='/order_details/<%= order.id %>'"
+      >
+        <h3><%= order.invoice %></h3>
+        <p>Status: <%= order.status %></p>
+        <p>Amount: <%= order.amount %></p>
+      </div>
+      <% }); %>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2024 Sakib Gadgets</p>
+    </div>
+  </body>
+</html>

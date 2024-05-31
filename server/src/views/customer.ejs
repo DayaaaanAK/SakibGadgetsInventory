@@ -1,0 +1,278 @@
+<!-- views/customers.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customers</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #b0c4de; /* Light Steel Blue */
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 a {
+        color: #fff; /* White color for the anchor tag */
+        text-decoration: none; /* Remove underline */
+      }
+
+      h1 a:visited {
+        color: #fff; /* White color for visited links */
+      }
+
+      .navbar {
+        background-color: #007bff; /* Blue navbar */
+        color: #fff;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .navbar h1 {
+        margin: 0;
+      }
+
+      .navbar-links {
+        background-color: #007bff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Adjust alignment */
+        width: 100%; /* Make navbar-links take full width */
+      }
+
+      .navbar-links div {
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar-links a,
+      .navbar-links button {
+        color: #fff;
+        text-decoration: none;
+        padding: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      /* Additional styles for better alignment */
+      .navbar-links .right {
+        margin-left: auto; /* Push the button to the right */
+      }
+
+      .logout-button {
+        background-color: #fff; /* White background */
+        color: #007bff; /* Blue text */
+        border: 1px solid #007bff; /* Blue border */
+        border-radius: 4px;
+        padding: 8px 12px;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .logout-button:hover {
+        background-color: #007bff; /* Blue background on hover */
+        color: #fff; /* White text on hover */
+      }
+
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        padding: 20px;
+        text-align: center;
+        width: 200px;
+        transition: transform 0.2s;
+        cursor: pointer;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .footer {
+        background-color: #007bff; /* Blue footer */
+        color: #fff;
+        padding: 10px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 8px;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      /* Form Styles */
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+
+      .form-group button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      .form-group button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <h1><a href="/dashboard">Sakib Gadgets</a></h1>
+      <a href="/admin/logout" class="logout-button">Logout</a>
+    </div>
+
+    <div class="navbar-links">
+      <div>
+        <a href="/customer">Customer</a>
+        <a href="/product">Product</a>
+        <a href="/order">Order</a>
+      </div>
+      <button
+        class="right"
+        onclick="document.getElementById('addCustomerModal').style.display='block'"
+      >
+        Add Customer
+      </button>
+    </div>
+
+    <div class="container">
+      <% customers.forEach(customer => { %>
+      <div
+        class="card"
+        onclick="location.href='/customer_details/<%= customer.id %>'"
+      >
+        <h3><%= customer.name %></h3>
+        <p>Email: <%= customer.email %></p>
+        <p>Phone: <%= customer.phone %></p>
+      </div>
+      <% }); %>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2024 Sakib Gadgets</p>
+    </div>
+
+    <!-- The Modal -->
+    <div id="addCustomerModal" class="modal">
+      <div class="modal-content">
+        <span
+          class="close"
+          onclick="document.getElementById('addCustomerModal').style.display='none'"
+          >&times;</span
+        >
+        <h2>Add Customer</h2>
+        <form action="/addCustomer" method="POST">
+          <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" required />
+          </div>
+          <div class="form-group">
+            <label for="street">Street:</label>
+            <input type="text" id="street" name="street" required />
+          </div>
+          <div class="form-group">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required />
+          </div>
+          <div class="form-group">
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" required />
+          </div>
+          <div class="form-group">
+            <label for="zipcode">Zipcode:</label>
+            <input type="text" id="zipcode" name="zipcode" required />
+          </div>
+          <div class="form-group">
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country" required />
+          </div>
+          <div class="form-group">
+            <button type="submit">Add Customer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Close modal when clicking outside of it
+      window.onclick = function (event) {
+        if (event.target == document.getElementById("addCustomerModal")) {
+          document.getElementById("addCustomerModal").style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>
