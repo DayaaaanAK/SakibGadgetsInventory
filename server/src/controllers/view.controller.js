@@ -139,6 +139,11 @@ const addOrder = async (req, res) => {
     if (productData.quantity < product_quantity) {
       res.status(400).json({ message: "Not enough stock" });
     } else {
+      const updatedProduct = await Product.updateAmount({
+        id: product_id,
+        productQuantity: productData.quantity,
+        orderQuantity: product_quantity,
+      });
       const amount = productData.price * product_quantity;
       const currency = "BDT";
       const redirect_url = `${process.env.REDIRECT_URI}/paymentStatus`;

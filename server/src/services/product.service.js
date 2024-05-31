@@ -39,4 +39,30 @@ const createProduct = async (opts) => {
   }
 };
 
-module.exports = { findAllProducts, findProductById, createProduct };
+const updateAmount = async (opts) => {
+  try {
+    const { id, productQuantity, orderQuantity } = opts;
+    const updatedAmount = productQuantity - orderQuantity;
+
+    const product = await Product.update(
+      { quantity: updatedAmount },
+      { where: { id: id }, returning: true }
+    );
+
+    if (product) {
+      const data = product[1][0].toJSON();
+
+      return data;
+    }
+    return null;
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+module.exports = {
+  findAllProducts,
+  findProductById,
+  createProduct,
+  updateAmount,
+};
